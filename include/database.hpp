@@ -13,3 +13,5 @@ extern vector<string> dbNames;
 
 void createTable();
 void deleteTable();
+void showTables();
+void showTableInfo();

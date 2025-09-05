@@ -97,3 +97,84 @@ void deleteTable() {
     this_thread::sleep_for(chrono::seconds(3));
     system("clear");
 }
+
+void showTables() {
+    int choice;
+    sqlite3* selectedDb;
+    reqCode = sqlite3_open("clinic.db", &selectedDb);
+
+    if (reqCode != SQLITE_OK) {
+        cout << "Ошибка открытия базы данных...: " << errMsg << endl;
+        sqlite3_free(errMsg);
+        return;
+    } else {
+        cout << "База данных клиники открыта....." << endl;
+    }
+
+    for (auto &table : tables) {
+        cout << table << endl;
+    }
+
+    sqlite3_close(selectedDb);
+    this_thread::sleep_for(chrono::seconds(3));
+    system("clear");
+}
+
+void showTableInfo() {
+    int choice;
+    sqlite3* selectedDb;
+    reqCode = sqlite3_open("clinic.db", &selectedDb);
+
+    if (reqCode != SQLITE_OK) {
+        cout << "Ошибка открытия базы данных...: " << errMsg << endl;
+        sqlite3_free(errMsg);
+        return;
+    } else {
+        cout << "База данных клиники открыта....." << endl;
+    }
+
+    cout << "Введите название таблицы: ";
+    string tableName;
+    cin >> tableName;
+
+    bool tableExists = false;
+    for (auto &table : tables) {
+        if (table == tableName) {
+            tableExists = true;
+            break;
+        }
+    }
+
+    if (!tableExists) {
+        cout << "Таблица не найдена..." << endl;
+        sqlite3_close(selectedDb);
+        return;
+    }
+
+    // Выводим названия столбцов
+    cout << "id\tfullName\t\tage\tdiagnosis\t\tlocation\t\tsex" << endl;
+    cout << "--------------------------------------------------------------------------------------------" << endl;
+
+    // Callback функция для обработки результатов запроса
+    auto callback = [](void* data, int argc, char** argv, char** azColName) -> int {
+        for (int i = 0; i < argc; i++) {
+            cout << (argv[i] ? argv[i] : "NULL") << "\t";
+        }
+        cout << endl;
+        return 0;
+    };
+
+    // Выполняем запрос для получения всех данных из таблицы
+    string sqlRequest = "SELECT * FROM " + tableName;
+    reqCode = sqlite3_exec(selectedDb, sqlRequest.c_str(), callback, NULL, &errMsg);
+
+    if (reqCode != SQLITE_OK) {
+        cout << "Ошибка выполнения запроса: " << errMsg << endl;
+        sqlite3_free(errMsg);
+    }
+
+    sqlite3_close(selectedDb);
+    this_thread::sleep_for(chrono::seconds(3));
+    system("clear");
+   
+}
