@@ -6,7 +6,6 @@ using namespace std;
 
 int main() {
 
-    getDbFiles(dbNames);
-
-    createTable(dbNames);
+    createTable();
+    deleteTable();
 }

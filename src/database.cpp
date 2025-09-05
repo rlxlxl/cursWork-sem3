@@ -3,64 +3,19 @@
 int reqCode;
 char* errMsg = nullptr;
 vector<string> tables;
-vector<string> dbNames;
-sqlite3* db = nullptr; // Определяем глобальную переменную
 
-void createDatabase() {
-    sqlite3 *new_database;
-    cout << "Введите название базы данных: ";
-    string new_database_name;
-    cin >> new_database_name;
 
-    for (auto &database : dbNames) {
-        if (database == new_database_name) {
-            cout << "База данных с таким названием уже существует" << endl;
-            return;
-        }
-    }
-
-    new_database_name += ".db";
-
-    reqCode = sqlite3_open(new_database_name.c_str(), &new_database);
-    if (reqCode != SQLITE_OK) {
-        cout << "Ошибка открытия базы данных: " << sqlite3_errmsg(new_database) << endl;
-        sqlite3_close(new_database);
-        return;
-    } else {
-        cout << "База данных " << new_database_name << " открыта успешно....." << endl;
-    }
-
-    dbNames.push_back(new_database_name);
-}
-
-void createTable(vector<string>& dbNames) {
-    bool found = false;
-    cout << "Выберите базу данных: ";
-    string databaseName;
-    cin >> databaseName;
+void createTable() {
     
-    // Добавляем расширение .db если его нет
-    if (databaseName.length() < 3 || databaseName.substr(databaseName.length() - 3) != ".db") {
-        databaseName += ".db";
-    }
+    sqlite3* selectedDb;
+    reqCode = sqlite3_open("clinic.db", &selectedDb);
 
-    sqlite3* selectedDb = nullptr;
-    for (auto dbname : dbNames) {
-        if (dbname == databaseName) {
-            cout << "Найдена база данных " << dbname << " ...." << endl;
-            reqCode = sqlite3_open(databaseName.c_str(), &selectedDb);
-            if (reqCode != SQLITE_OK) {
-                cout << "Ошибка открытия базы данных: " << sqlite3_errmsg(selectedDb) << endl;
-                return;
-            }
-            found = true;
-            break;
-        }
-    }
+    if (reqCode != SQLITE_OK) {
+        cout << "Ошибка открытия базы данных...: " << errMsg << endl;
+        sqlite3_free(errMsg);
+    } else {
+        cout << "База данных клиники открыта....." << endl;
 
-    if (!found) {
-        cout << "База данных не найдена...." << endl;
-        return;
     }
 
     cout << "Введите название таблицы: ";
@@ -92,33 +47,53 @@ void createTable(vector<string>& dbNames) {
     system("clear");
 }
 
-void deleteTable(vector<string>& dbNames) {
-    bool found = false;
-    cout << "Выберите базу данных: ";
-    string databaseName;
-    cin >> databaseName;
+void deleteTable() {
     
-    // Добавляем расширение .db если его нет
-    if (databaseName.length() < 3 || databaseName.substr(databaseName.length() - 3) != ".db") {
-        databaseName += ".db";
+    sqlite3* selectedDb;
+    reqCode = sqlite3_open("clinic.db", &selectedDb);
+
+    if (reqCode != SQLITE_OK) {
+        cout << "Ошибка открытия базы данных...: " << errMsg << endl;
+        sqlite3_free(errMsg);
+    } else {
+        cout << "База данных клиники открыта....." << endl;
+
     }
 
-    sqlite3* selectedDb = nullptr;
-    for (auto dbname : dbNames) {
-        if (dbname == databaseName) {
-            cout << "Найдена база данных " << dbname << " ...." << endl;
-            reqCode = sqlite3_open(databaseName.c_str(), &selectedDb);
-            if (reqCode != SQLITE_OK) {
-                cout << "Ошибка открытия базы данных: " << sqlite3_errmsg(selectedDb) << endl;
-                return;
-            }
-            found = true;
+    cout << "Введите название таблицы для удаления: ";
+    string tableName;
+    cin >> tableName;
+    
+    // Проверяем, существует ли таблица
+    bool tableExists = false;
+    for (auto &table : tables) {
+        if (table == tableName) {
+            tableExists = true;
             break;
         }
     }
-
-    if (!found) {
-        cout << "База данных не найдена...." << endl;
+    
+    if (!tableExists) {
+        cout << "Таблица не найдена...." << endl;
+        sqlite3_close(selectedDb);
         return;
     }
+    
+    // SQL запрос для удаления таблицы
+    string sqlRequest = "DROP TABLE " + tableName;
+    
+    reqCode = sqlite3_exec(selectedDb, sqlRequest.c_str(), NULL, NULL, &errMsg);
+    
+    if (reqCode != SQLITE_OK) {
+        cout << "Ошибка удаления таблицы: " << errMsg << endl;
+        sqlite3_free(errMsg);
+    } else {
+        cout << "Таблица " << tableName << " удалена успешно....." << endl;
+        // Удаляем таблицу из вектора tables
+        tables.erase(remove(tables.begin(), tables.end(), tableName), tables.end());
+    }
+    
+    sqlite3_close(selectedDb);
+    this_thread::sleep_for(chrono::seconds(3));
+    system("clear");
 }

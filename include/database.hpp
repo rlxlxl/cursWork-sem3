@@ -6,9 +6,10 @@
 #include <chrono>
 #include <thread>
 #include <cstdlib>
-
+#include <algorithm>
 using namespace std;
 
 extern vector<string> dbNames;
-void createDatabase();
-void createTable(vector<string>& dbNames);
+
+void createTable();
+void deleteTable();
