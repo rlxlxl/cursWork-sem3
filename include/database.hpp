@@ -1,4 +1,5 @@
 #pragma once
+
 #include <sqlite3.h>
 #include <string>
 #include <iostream>
@@ -7,11 +8,21 @@
 #include <thread>
 #include <cstdlib>
 #include <algorithm>
+#include <limits>
+#include <iomanip>
+#include <format>
+
 using namespace std;
 
-extern vector<string> dbNames;
-
+void workWithTables();
+void initializeTables();
 void createTable();
 void deleteTable();
 void showTables();
 void showTableInfo();
+void showNonresidentPatients();
+void deleteNonresidentPatients();
+void addPatient();
+void deletePatient();
+void changePatientDiagnosis();
+void showPatientsByAge();

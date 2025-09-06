@@ -19,7 +19,7 @@ vector<string> diseases;
 
 vector<string> loadDiseasesFromFile() {
     vector<string> diseasesList;
-    ifstream file("illnesses.txt");
+    ifstream file("assets/illnesses.txt");
     
     if (!file.is_open()) {
         cout << "Ошибка открытия файла diseases.txt" << endl;
