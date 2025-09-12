@@ -6,6 +6,19 @@
 
 using namespace std;
 
+
+enum menu {
+    WORK_WITH_TABLES = 1,
+    SHOW_NONRESIDENT_PATIENTS = 2,
+    ADD_PATIENT = 3,
+    DELETE_PATIENT = 4,
+    DELETE_NONRESIDENT_PATIENTS = 5,
+    CHANGE_DIAGNOSIS = 6,
+    FILTER_PATIENTS_BY_AGE = 7,
+    GENERATE_RANDOM_PATIENTS = 8,
+    CLEAR_CONSOLE = 9,
+    EXIT = 0
+};
 int main() {
 
     printBanner("assets/banner.txt");
@@ -21,41 +34,45 @@ int main() {
         cout << "6. Поменять диагноз пациента" << endl;
         cout << "7. Фильтрация пациентов по возрасту" << endl;
         cout << "8. Сгенерировать 1000 случайных пациентов" << endl;
-        cout << "9. Выход" << endl;
-        cout << "10. Очистить консоль" << endl;
+        cout << "9. Очистить консоль" << endl;
+        cout << "0. Выход" << endl;
 
         int choice;
         cin >> choice;
 
         switch (choice) {
-            case 1:
+            case WORK_WITH_TABLES:
                 workWithTables();
                 break;
-            case 2:
+            case SHOW_NONRESIDENT_PATIENTS:
                 showNonresidentPatients();
                 break;
-            case 3:
+            case ADD_PATIENT:
                 addPatient();
                 break;
-            case 4:
+            case DELETE_PATIENT:
                 deletePatient();
                 break;
-            case 5:
+            case DELETE_NONRESIDENT_PATIENTS:
                 deleteNonresidentPatients();
                 break;
-            case 6:
+            case CHANGE_DIAGNOSIS:
                 changePatientDiagnosis();
                 break;
-            case 7:
+            case FILTER_PATIENTS_BY_AGE:
                 showPatientsByAge();
                 break;
-            case 8:
+            case GENERATE_RANDOM_PATIENTS:
                 addRandomPatients(1000);
                 break;
-            case 9:
-                return 0;
-            case 10:
+            case CLEAR_CONSOLE:
                 system("clear");
+                break;
+            case EXIT:
+                exit(0);
+            default:
+                cout << "Неверный выбор" << endl;
+                break;
         }
     }
 

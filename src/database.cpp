@@ -4,6 +4,14 @@ int reqCode;
 char* errMsg = nullptr;
 vector<string> tables;
 
+enum menuDB {
+    CREATE_TABLE = 1,
+    DELETE_TABLE = 2,
+    SHOW_TABLES = 3,
+    SHOW_TABLE_INFO = 4,
+    EXIT = 0
+};
+
 void workWithTables() {
 
     int choice;
@@ -13,25 +21,29 @@ void workWithTables() {
     cout << "2. Удалить таблицу" << endl;
     cout << "3. Показать таблицы" << endl;
     cout << "4. Показать информацию в таблице" << endl;
-    cout << "5. Выход" << endl;
+    cout << "0. Выход" << endl;
 
     cin >> choice;
 
-    switch(choice) {
-        case 1:
+    switch (choice) {
+        case CREATE_TABLE:
             createTable();
             break;
-        case 2:
+        case DELETE_TABLE:
             deleteTable();
             break;
-        case 3:
+        case SHOW_TABLES:
             showTables();
             break;
-        case 4:
+        case SHOW_TABLE_INFO:
             showTableInfo();
             break;
-        case 5:
+        case EXIT:
             return;
+        default:
+            cout << "Неверный выбор..." << endl;
+            break;
+
     }
 }
 
